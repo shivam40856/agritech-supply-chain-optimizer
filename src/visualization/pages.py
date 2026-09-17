@@ -27,14 +27,14 @@ def _kpi_card(label, value, delta=None, delta_label="", help_text=""):
         else:
             delta_html = f"<div class='kpi-delta-neg'>▼ {delta:.1f}% {delta_label}</div>"
     help_icon = f' <span title="{help_text}" style="cursor:help;color:#6B7280;">ⓘ</span>' if help_text else ""
-    st.markdown(
-        f"""<div class='kpi-card'>
-            <div class='kpi-label'>{label}{help_icon}</div>
-            <div class='kpi-value'>{value}</div>
-            {delta_html}
-        </div>""",
-        unsafe_allow_html=True,
+    html = (
+        f"<div class='kpi-card'>"
+        f"<div class='kpi-label'>{label}{help_icon}</div>"
+        f"<div class='kpi-value'>{value}</div>"
+        f"{delta_html}"
+        f"</div>"
     )
+    st.markdown(html, unsafe_allow_html=True)
 
 
 @st.cache_data(show_spinner=False)
