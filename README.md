@@ -1,4 +1,4 @@
-# 🌾 Mandi-to-Market Supply Chain Optimizer
+# Mandi-to-Market Supply Chain Optimizer
 
 > Built for the **TransOrg AgentIQ Datathon — Track 3 (AgriTech)**
 
@@ -165,25 +165,25 @@ The app opens at `http://localhost:8501` by default.
 
 Here's what each page does:
 
-### 🌾 Executive Overview
+### Executive Overview
 Top-level KPIs — total arrivals, active mandis, average prices, weather summary. Quick snapshot of the entire supply chain health.
 
-### 💰 Price & MSP Discovery
+### Price & MSP Discovery
 Compare modal prices against MSP across crops, mandis, and time periods. Highlights where farmers are getting shortchanged (price below MSP).
 
-### 📦 Arrivals & Anomalies
+### Arrivals & Anomalies
 Daily/weekly arrival trends with statistical anomaly detection. Uses Z-score and IQR methods to flag unusual spikes or drops in crop volumes.
 
-### ☁️ Weather Impact
+### Weather Impact
 Correlates temperature, rainfall, and humidity readings with crop arrival patterns. Useful for understanding seasonal effects and weather-driven disruptions.
 
-### 🚚 Logistics Performance
+### Logistics Performance
 Transport efficiency metrics — average transit time, distance distributions, route-level delays, vehicle performance. Flags trips that exceeded expected durations.
 
-### ✅ Data Quality
+### Data Quality
 Shows how messy the raw data was and how much of it we managed to clean. Tracks null rates, format inconsistencies, and records that failed validation.
 
-### 🤖 AgentIQ Graph Assistant
+### AgentIQ Graph Assistant
 Type a question in plain English and get back a SQL-generated chart + text summary. The agent detects your intent, writes a safe read-only query, picks the best chart type, and renders it inline.
 
 **Example queries you can try:**
