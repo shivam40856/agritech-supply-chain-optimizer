@@ -76,15 +76,20 @@ def build_sidebar(show_title: bool = True) -> dict:
 
         # --- Cascading State → District → Mandi ---
         st.subheader("🗺️ Geography")
+
         all_states = sorted(master_df["state"].fillna("Unmapped").unique().tolist())
-        sel_states = st.multiselect("State", all_states,
-                                    default=st.session_state["filter_states"],
-                                    key="ms_states")
+        sel_states = st.multiselect(
+            "State", all_states,
+            default=st.session_state["filter_states"],
+            key="ms_states",
+            placeholder=f"Select from {len(all_states)} states..."
+        )
         st.session_state["filter_states"] = sel_states
+        if not sel_states:
+            st.caption(f"Available: {', '.join(all_states)}")
 
         # Filter districts by selected states
         if sel_states:
-            # Treat "Unmapped" as NaN in master
             real_states = [s for s in sel_states if s != "Unmapped"]
             if "Unmapped" in sel_states:
                 dist_df = master_df[master_df["state"].isin(real_states) | master_df["state"].isna()]
@@ -94,9 +99,12 @@ def build_sidebar(show_title: bool = True) -> dict:
             dist_df = master_df
 
         all_districts = sorted(dist_df["district"].fillna("Unmapped").unique().tolist())
-        sel_districts = st.multiselect("District", all_districts,
-                                       default=[d for d in st.session_state["filter_districts"] if d in all_districts],
-                                       key="ms_districts")
+        sel_districts = st.multiselect(
+            "District", all_districts,
+            default=[d for d in st.session_state["filter_districts"] if d in all_districts],
+            key="ms_districts",
+            placeholder=f"Select from {len(all_districts)} districts..."
+        )
         st.session_state["filter_districts"] = sel_districts
 
         # Filter mandis by selected districts
@@ -110,19 +118,27 @@ def build_sidebar(show_title: bool = True) -> dict:
             mandi_df = dist_df
 
         all_mandis = sorted(mandi_df["mandi_name"].dropna().unique().tolist())
-        sel_mandis = st.multiselect("Mandi", all_mandis,
-                                    default=[m for m in st.session_state["filter_mandis"] if m in all_mandis],
-                                    key="ms_mandis")
+        sel_mandis = st.multiselect(
+            "Mandi", all_mandis,
+            default=[m for m in st.session_state["filter_mandis"] if m in all_mandis],
+            key="ms_mandis",
+            placeholder=f"Select from {len(all_mandis)} mandis..."
+        )
         st.session_state["filter_mandis"] = sel_mandis
 
         st.markdown("---")
 
         # --- Crops ---
         st.subheader("🌱 Crop")
-        sel_crops = st.multiselect("Crop", all_crops,
-                                   default=st.session_state["filter_crops"],
-                                   key="ms_crops")
+        sel_crops = st.multiselect(
+            "Crop", all_crops,
+            default=st.session_state["filter_crops"],
+            key="ms_crops",
+            placeholder=f"Select from {len(all_crops)} crops..."
+        )
         st.session_state["filter_crops"] = sel_crops
+        if not sel_crops:
+            st.caption(f"Available: {', '.join(all_crops)}")
 
         st.markdown("---")
 
@@ -130,8 +146,31 @@ def build_sidebar(show_title: bool = True) -> dict:
         compare = st.toggle("Compare to previous period", value=st.session_state["compare_previous"])
         st.session_state["compare_previous"] = compare
 
+        # --- Active filter summary ---
+        active_count = sum([
+            bool(sel_states), bool(sel_districts),
+            bool(sel_mandis), bool(sel_crops)
+        ])
+        if active_count > 0:
+            summary_parts = []
+            if sel_states:
+                summary_parts.append(f"**States:** {', '.join(sel_states)}")
+            if sel_districts:
+                summary_parts.append(f"**Districts:** {', '.join(sel_districts)}")
+            if sel_mandis:
+                summary_parts.append(f"**Mandis:** {', '.join(sel_mandis)}")
+            if sel_crops:
+                summary_parts.append(f"**Crops:** {', '.join(sel_crops)}")
+            st.success(f"🎯 **{active_count} filter(s) active**")
+            for part in summary_parts:
+                st.markdown(f"  {part}", unsafe_allow_html=True)
+        else:
+            st.caption("ℹ️ No filters applied — showing all data.")
+
+        st.markdown("---")
+
         # --- Reset button ---
-        if st.button("🔄 Reset all filters"):
+        if st.button("🔄 Reset all filters", use_container_width=True):
             st.session_state["filter_start"] = min_date
             st.session_state["filter_end"] = max_date
             st.session_state["filter_states"] = []
